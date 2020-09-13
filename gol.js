@@ -1,7 +1,7 @@
 let screenWidth=screen.width;
 let screenHeight=screen.height;
 
-let gridSize=10; //20x20 pixel wide
+let gridSize=5; //20x20 pixel wide
 let golCanvas=document.getElementById('golCanvas');
 const ctx = golCanvas.getContext('2d');
 
@@ -46,45 +46,87 @@ function evaluteState(){
 
             if((j+1)<=grids_arr[i].length-1){                
                 totalneighbours=totalneighbours+grids_arr[i][j+1];                
+            }else{
+                totalneighbours=totalneighbours+grids_arr[i][0];                
             }
+
             if((j-1)>=0){                
                totalneighbours=totalneighbours+grids_arr[i][j-1];                
+            }else{
+                totalneighbours=totalneighbours+grids_arr[i][grids_arr[i].length-1];                
             }
 
             if((i+1)<=grids_arr.length-1){                
                 
                totalneighbours=totalneighbours+grids_arr[i+1][j];               
+            }else{
+                totalneighbours=totalneighbours+grids_arr[0][j];               
             }
             
             if((i-1)>=0){                
                 totalneighbours=totalneighbours+grids_arr[i-1][j];
+            }else{
+                totalneighbours=totalneighbours+grids_arr[grids_arr.length-1][j];
             }
             
+
+
             if((i+1)<=grids_arr.length-1 && (j+1)<=grids_arr[i].length-1){                
                 totalneighbours=totalneighbours+grids_arr[i+1][j+1];                
+            }else{
+                 
+                if((j+1)<=grids_arr[i].length-1){
+                    totalneighbours=totalneighbours+grids_arr[0][j+1]; 
+                }else{
+                    totalneighbours=totalneighbours+grids_arr[0][0]; 
+                }
+                
+                
             }
 
             if((i+1)<=grids_arr.length-1 && (j-1)>=0){                
                 totalneighbours=totalneighbours+grids_arr[i+1][j-1];
+            }else{
+                if((j-1)>=0){
+                    totalneighbours=totalneighbours+grids_arr[0][j-1];
+                }else{
+                    totalneighbours=totalneighbours+grids_arr[0][grids_arr[i].length-1];
+                }
+                
             }
+
+
             if((i-1)>=0 && (j+1)<=grids_arr[i].length-1){                
                 totalneighbours=totalneighbours+grids_arr[i-1][j+1];                
+            }else{
+                if( (j+1)<=grids_arr[i].length-1){
+                    totalneighbours=totalneighbours+grids_arr[grids_arr.length-1][j+1];  
+                }else{
+                    totalneighbours=totalneighbours+grids_arr[grids_arr.length-1][0];
+                }
+                
             }
 
             if((i-1)>=0 && (j-1)>=0){                
                 totalneighbours=totalneighbours+grids_arr[i-1][j-1];                
+            }else{
+                if( (j-1)>=0){
+                    totalneighbours=totalneighbours+grids_arr[grids_arr.length-1][j-1];        
+                }else{
+                    totalneighbours=totalneighbours+grids_arr[grids_arr.length-1][grids_arr[i].length-1];        
+                }
+                 
             }
 
 
             if(totalneighbours<2){
                 currentCellState=0;
             }else if(totalneighbours>=2 && totalneighbours<=3 ){
+                
                 if(totalneighbours==3){
                     if(currentCellState==0){
                         currentCellState=1;
-                    }else{
-                        currentCellState=1;
-                    }
+                    } 
                 }
             }else if(totalneighbours>3){
                 currentCellState=0;
@@ -101,6 +143,7 @@ function evaluteState(){
 }
 
 function renderGrids(grids_data){
+    //ctx.clearRect(0, 0, golCanvas.width, golCanvas.height);
     if(grids_data==false){
 
     }else{
@@ -110,16 +153,17 @@ function renderGrids(grids_data){
     for(i=0;i<grids_arr.length;i++){
         var x=0;
         for(j=0;j<grids_arr[i].length;j++){
-
+            ctx.beginPath();
+           
             if(grids_arr[i][j]==1){
                 //the cell is alive
-                ctx.fillStyle = "#7CFC00";
+                ctx.fillStyle = "#FFFFFF";                
             }else{
                 //the cell is dead
-                ctx.fillStyle = "#DC143C";
-                
+                ctx.fillStyle = "#000000"; 
             }
-            ctx.beginPath();
+            ctx.strokeStyle = "#000000";     
+            ctx.strokeRect(j+x, i+y, gridSize, gridSize);
             ctx.fillRect(j+x, i+y, gridSize, gridSize);           
             x=x+gridSize;
         }
@@ -129,6 +173,6 @@ function renderGrids(grids_data){
 } 
 window.setInterval(function(){
     evaluteState();
-  }, 500);
+  }, 20);
 
 init();
